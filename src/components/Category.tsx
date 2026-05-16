@@ -1,14 +1,34 @@
-import Group from "./Group"
+import { ArrowDown, ArrowUp, PlusIcon } from "lucide-react";
+import Item from "./Item";
+import { Category } from "./Link";
+import { Button } from "./ui/button";
 
-interface Props {
-	name: string;
-}
-
-export default function Category({name}: Props): React.JSX.Element {
-	return <section>
-			<h5>{name}</h5>
-			<div>
-				<Group name="Test 1" />
-			</div>
-		</section>
+export default function Categories({
+    name,
+    links,
+}: Category): React.JSX.Element {
+    return (
+        <section>
+            <div className="flex items-center justify-between gap-2">
+                <h5 className="text-lg">{name}</h5>
+                <div className="flex flex-col">
+                    <Button className="[&_svg]:w-3!">
+                        <ArrowUp />
+                    </Button>
+                    <Button className="[&_svg]:w-3!">
+                        <ArrowDown />
+                    </Button>
+                </div>
+            </div>
+            <div className="flex items-center gap-2">
+                {links.map((l, i) => (
+                    <Item key={i} icon={l.icon} name={l.name} url={l.url} />
+                ))}
+                <Button>
+                    <PlusIcon />
+                    Add new Link
+                </Button>
+            </div>
+        </section>
+    );
 }
