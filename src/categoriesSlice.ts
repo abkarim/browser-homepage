@@ -44,6 +44,13 @@ export const categoriesSlice = createSlice({
     name: "categories",
     initialState: loadState() || initialState,
     reducers: {
+        addCategory: (state, action: PayloadAction<Category["name"]>) => {
+            state.push({
+                id: uuidv4(),
+                name: action.payload,
+                links: [],
+            });
+        },
         addLink: (
             state,
             action: PayloadAction<{
@@ -129,6 +136,11 @@ export const categoriesSlice = createSlice({
     },
 });
 
-export const { updateLink, deleteLink, incrementClickCount } =
-    categoriesSlice.actions;
+export const {
+    updateLink,
+    deleteLink,
+    incrementClickCount,
+    addLink,
+    addCategory,
+} = categoriesSlice.actions;
 export default categoriesSlice.reducer;
