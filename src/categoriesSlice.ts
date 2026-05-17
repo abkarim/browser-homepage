@@ -1,5 +1,8 @@
 import { Category, Link } from "@/components/Link";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from "uuid";
+import { loadState } from "./lib/storage";
+import { getFavIconImageUrl } from "./lib/faviconExtractor";
 
 const initialState: Category[] = [
     {
@@ -8,7 +11,7 @@ const initialState: Category[] = [
         links: [
             {
                 id: "asdfasdfasadfasdasdfsf",
-                name: "facebook",
+                name: "Facebook",
                 url: "https://facebook.com",
                 icon: "",
                 openCount: 0,
@@ -39,13 +42,36 @@ const initialState: Category[] = [
 
 export const categoriesSlice = createSlice({
     name: "categories",
-    initialState,
+    initialState: loadState() || initialState,
     reducers: {
+        addLink: (
+            state,
+            action: PayloadAction<{
+                name: Link["name"];
+                url: Link["url"];
+                categoryId: Category["id"];
+            }>,
+        ) => {
+            const { name, url, categoryId } = action.payload;
+
+            const category = state.find((cat) => cat.id === categoryId);
+
+            if (category) {
+                const link: Link = {
+                    id: uuidv4(),
+                    name,
+                    url,
+                    openCount: 0,
+                    icon: getFavIconImageUrl(url),
+                };
+
+                category.links.push(link);
+            }
+        },
         updateLink: (
             state,
             action: PayloadAction<{ link: Link; categoryId: Category["id"] }>,
         ) => {
-            console.log(action.payload);
             const { categoryId, link } = action.payload;
             const category = state.find((cat) => cat.id === categoryId);
 
@@ -80,8 +106,29 @@ export const categoriesSlice = createSlice({
                 }
             }
         },
+        incrementClickCount: (
+            state,
+            action: PayloadAction<{
+                categoryId: Category["id"];
+                linkId: Link["id"];
+            }>,
+        ) => {
+            const { categoryId, linkId } = action.payload;
+            const category = state.find((cat) => cat.id === categoryId);
+
+            if (category) {
+                const linkIndex = category.links.findIndex(
+                    (l) => l.id === linkId,
+                );
+
+                if (linkIndex !== -1) {
+                    category.links[linkIndex].openCount += 1;
+                }
+            }
+        },
     },
 });
 
-export const { updateLink, deleteLink } = categoriesSlice.actions;
+export const { updateLink, deleteLink, incrementClickCount } =
+    categoriesSlice.actions;
 export default categoriesSlice.reducer;
