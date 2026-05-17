@@ -1,4 +1,3 @@
-import { getFavIconImageUrl } from "@/lib/faviconExtractor";
 import { type Link } from "./Link";
 import {
     Popover,
@@ -12,8 +11,9 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { deleteLink, updateLink } from "@/categoriesSlice";
+import { deleteLink, incrementClickCount, updateLink } from "@/categoriesSlice";
 import { useAppDispatch } from "@/hook/redux";
+import { getFavIconImageUrl } from "@/lib/faviconExtractor";
 
 interface Props extends Link {
     categoryId: string;
@@ -94,13 +94,21 @@ export default function Item({
                 </Popover>
             </div>
             <a
+                onClick={() =>
+                    dispatch(
+                        incrementClickCount({
+                            categoryId,
+                            linkId: id,
+                        }),
+                    )
+                }
                 href={url}
                 className="flex flex-col items-center text-sm gap-2 border border-primary/30 rounded min-w-20 p-2"
             >
                 <div className="rounded-full bg-primary/50 h-10 w-10 flex items-center justify-center">
                     <img
                         className="h-full w-full rounded-full p-1"
-                        src={getFavIconImageUrl(url)}
+                        src={icon || getFavIconImageUrl(url)}
                         alt={name}
                     />
                 </div>
