@@ -139,4 +139,7 @@
     html {
         @apply font-sans;
     }
+    label {
+        @apply text-xs!;
+    }
 }

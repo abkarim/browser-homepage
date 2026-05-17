@@ -1,41 +1,22 @@
 import Categories from "@/components/Category";
-import { type Category } from "./components/Link";
 import { Button } from "./components/ui/button";
 import { PlusIcon } from "lucide-react";
-
-const categories: Category[] = [
-    {
-        name: "Social Media",
-        links: [
-            {
-                name: "facebook",
-                url: "https://facebook.com",
-                icon: "",
-            },
-            {
-                name: "Twitter",
-                url: "https://x.com",
-                icon: "",
-            },
-        ],
-    },
-    {
-        name: "Development",
-        links: [
-            {
-                name: "GitHub",
-                url: "https://github.com",
-                icon: "",
-            },
-        ],
-    },
-];
+import { useAppSelector } from "./hook/redux";
 
 function App() {
+    const categories = useAppSelector((state) => state.categories);
+
     return (
-        <section className="p-2 space-y-4">
-            {categories.map((cat, i) => (
-                <Categories key={i} name={cat.name} links={cat.links} />
+        <section className="p-2 space-y-5">
+            {categories.map(({ id, links, name }, i) => (
+                <Categories
+                    key={id}
+                    id={id}
+                    canGoUp={i !== 0}
+                    canGoDown={i + 1 < categories.length}
+                    name={name}
+                    links={links}
+                />
             ))}
             <Button>
                 <PlusIcon /> New Category
